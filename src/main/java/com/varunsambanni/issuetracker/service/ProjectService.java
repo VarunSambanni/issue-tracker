@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProjectService {
@@ -23,5 +24,9 @@ public class ProjectService {
 
         projects.add(project) ;
         return project;
+    }
+
+    public Optional<ProjectResponse> getProjectById(Long id){
+        return projects.stream().filter(project -> project.id().equals(id)).findFirst();
     }
 }
