@@ -1,8 +1,16 @@
 package com.varunsambanni.issuetracker.controller;
 
 import com.varunsambanni.issuetracker.dto.ProjectResponse;
+import com.varunsambanni.issuetracker.dto.CreateProjectRequest;
+
 import com.varunsambanni.issuetracker.service.ProjectService;
+
+import org.springframework.http.HttpStatus;
+
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,5 +28,13 @@ public class ProjectController {
     @GetMapping
     public List<ProjectResponse> getAllProjects(){
         return projectService.getAllProjects();
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProjectResponse createProject(
+            @RequestBody CreateProjectRequest request
+    ){
+        return projectService.createProject(request) ;
     }
 }
