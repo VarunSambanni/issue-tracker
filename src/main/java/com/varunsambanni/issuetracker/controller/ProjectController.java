@@ -2,11 +2,12 @@ package com.varunsambanni.issuetracker.controller;
 
 import com.varunsambanni.issuetracker.dto.ProjectResponse;
 import com.varunsambanni.issuetracker.dto.CreateProjectRequest;
+import com.varunsambanni.issuetracker.dto.UpdateProjectRequest;
 
 import com.varunsambanni.issuetracker.service.ProjectService;
 
 import org.springframework.http.HttpStatus;
-
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,5 +54,16 @@ public class ProjectController {
         }
 
         return ResponseEntity.ok(project.get());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProjectResponse> updateProject(
+            @PathVariable Long id, @RequestBody UpdateProjectRequest request
+    ){
+        Optional<ProjectResponse> updateProject = projectService.updateProject(id, request) ;
+        if (updateProject.isEmpty()) {
+            return ResponseEntity.notFound().build() ;
+        }
+        return ResponseEntity.ok(updateProject.get());
     }
 }
