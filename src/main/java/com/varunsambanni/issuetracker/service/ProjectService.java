@@ -43,4 +43,9 @@ public class ProjectService {
         }
         return Optional.empty();
     }
+
+    public boolean deleteProject(Long id) {
+        return projects.removeIf(project -> project.id().equals(id));
+
+    }
 }

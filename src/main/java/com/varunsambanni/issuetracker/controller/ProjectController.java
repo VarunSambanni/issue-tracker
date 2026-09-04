@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import org.springframework.http.ResponseEntity;
 
@@ -65,5 +66,15 @@ public class ProjectController {
             return ResponseEntity.notFound().build() ;
         }
         return ResponseEntity.ok(updateProject.get());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProject(@PathVariable Long id){
+        boolean deleted = projectService.deleteProject(id);
+
+        if (!deleted){
+            return ResponseEntity.notFound().build() ;
+        }
+        return ResponseEntity.noContent().build();
     }
 }
