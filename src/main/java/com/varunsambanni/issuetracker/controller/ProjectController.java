@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
@@ -39,7 +41,7 @@ public class ProjectController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProjectResponse createProject(
-            @RequestBody CreateProjectRequest request
+            @Valid @RequestBody CreateProjectRequest request
     ) {
         return projectService.createProject(request);
     }
@@ -59,7 +61,7 @@ public class ProjectController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ProjectResponse> updateProject(
-            @PathVariable Long id, @RequestBody UpdateProjectRequest request
+            @PathVariable Long id, @Valid @RequestBody UpdateProjectRequest request
     ){
         Optional<ProjectResponse> updateProject = projectService.updateProject(id, request) ;
         if (updateProject.isEmpty()) {

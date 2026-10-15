@@ -46,6 +46,5 @@ public class ProjectService {
 
     public boolean deleteProject(Long id) {
         return projects.removeIf(project -> project.id().equals(id));
-
     }
 }
