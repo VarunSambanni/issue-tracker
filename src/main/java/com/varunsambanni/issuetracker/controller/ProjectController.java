@@ -50,13 +50,7 @@ public class ProjectController {
     public ResponseEntity<ProjectResponse> getProjectById(
             @PathVariable Long id
     ) {
-        Optional<ProjectResponse> project = projectService.getProjectById(id);
-
-        if (project.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(project.get());
+        return ResponseEntity.ok(projectService.getProjectById(id));
     }
 
     @PutMapping("/{id}")

@@ -4,6 +4,7 @@ import com.varunsambanni.issuetracker.dto.CreateProjectRequest;
 import com.varunsambanni.issuetracker.dto.ProjectResponse;
 import com.varunsambanni.issuetracker.dto.UpdateProjectRequest;
 
+import com.varunsambanni.issuetracker.exception.ProjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,8 +29,8 @@ public class ProjectService {
         return project;
     }
 
-    public Optional<ProjectResponse> getProjectById(Long id){
-        return projects.stream().filter(project -> project.id().equals(id)).findFirst();
+    public ProjectResponse getProjectById(Long id){
+        return projects.stream().filter(project -> project.id().equals(id)).findFirst().orElseThrow(() -> new ProjectNotFoundException((id)));
     }
 
     public Optional<ProjectResponse> updateProject(Long id, UpdateProjectRequest request){
