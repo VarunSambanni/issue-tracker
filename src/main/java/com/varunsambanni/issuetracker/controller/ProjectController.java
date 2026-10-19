@@ -57,20 +57,14 @@ public class ProjectController {
     public ResponseEntity<ProjectResponse> updateProject(
             @PathVariable Long id, @Valid @RequestBody UpdateProjectRequest request
     ){
-        Optional<ProjectResponse> updateProject = projectService.updateProject(id, request) ;
-        if (updateProject.isEmpty()) {
-            return ResponseEntity.notFound().build() ;
-        }
-        return ResponseEntity.ok(updateProject.get());
+        return ResponseEntity.ok(
+                projectService.updateProject(id, request)
+        );
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProject(@PathVariable Long id){
-        boolean deleted = projectService.deleteProject(id);
-
-        if (!deleted){
-            return ResponseEntity.notFound().build() ;
-        }
+        projectService.deleteProject(id);
         return ResponseEntity.noContent().build();
     }
 }

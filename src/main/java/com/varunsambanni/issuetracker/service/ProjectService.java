@@ -33,19 +33,24 @@ public class ProjectService {
         return projects.stream().filter(project -> project.id().equals(id)).findFirst().orElseThrow(() -> new ProjectNotFoundException((id)));
     }
 
-    public Optional<ProjectResponse> updateProject(Long id, UpdateProjectRequest request){
+    public ProjectResponse updateProject(Long id, UpdateProjectRequest request){
         for (int index = 0; index < projects.size(); index++){
             ProjectResponse existingProject = projects.get(index) ;
             if (existingProject.id().equals(id)){
                 ProjectResponse updatedProject = new ProjectResponse(id, request.name(), request.description());
                 projects.set(index, updatedProject);
-                return Optional.of(updatedProject);
+                return updatedProject;
             }
         }
-        return Optional.empty();
+        throw new ProjectNotFoundException(id);
     }
 
-    public boolean deleteProject(Long id) {
-        return projects.removeIf(project -> project.id().equals(id));
+    public void deleteProject(Long id) {
+        boolean deleted = projects.removeIf(
+                project -> project.id().equals(id)
+        );
+        if (!deleted){
+            throw new ProjectNotFoundException(id) ;
+        }
     }
 }
