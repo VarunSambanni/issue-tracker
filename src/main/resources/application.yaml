@@ -1,3 +1,16 @@
 spring:
   application:
     name: issue-tracker
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/issue_tracker}
+    username: ${DB_USERNAME:issue_user}
+    password: ${DB_PASSWORD:issue_password}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
