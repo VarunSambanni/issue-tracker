@@ -6,51 +6,59 @@ import com.varunsambanni.issuetracker.dto.UpdateProjectRequest;
 
 import com.varunsambanni.issuetracker.exception.ProjectNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.varunsambanni.issuetracker.entity.Project;
+import com.varunsambanni.issuetracker.repository.ProjectRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 public class ProjectService {
 
-    private final List<ProjectResponse> projects = new ArrayList<>();
-    private long nextId = 1;
+    private final ProjectRepository projectRepository;
 
-
-    public List<ProjectResponse> getAllProjects() {
-        return List.copyOf(projects) ;
+    public ProjectService(ProjectRepository projectRepository){
+        this.projectRepository = projectRepository;
     }
 
-    public ProjectResponse createProject(CreateProjectRequest request){
-        ProjectResponse project = new ProjectResponse(nextId++, request.name(), request.description());
+    public List<ProjectResponse> getAllProjects() {
+        return projectRepository.findAll().stream().map(this::toResponse).toList();
+    }
 
-        projects.add(project) ;
-        return project;
+    @Transactional
+    public ProjectResponse createProject(CreateProjectRequest request){
+        Project project = new Project(request.name(), request.description());
+        Project savedProject = projectRepository.save(project);
+        return toResponse(savedProject);
     }
 
     public ProjectResponse getProjectById(Long id){
-        return projects.stream().filter(project -> project.id().equals(id)).findFirst().orElseThrow(() -> new ProjectNotFoundException((id)));
+        return toResponse(findProject(id));
     }
 
+    @Transactional
     public ProjectResponse updateProject(Long id, UpdateProjectRequest request){
-        for (int index = 0; index < projects.size(); index++){
-            ProjectResponse existingProject = projects.get(index) ;
-            if (existingProject.id().equals(id)){
-                ProjectResponse updatedProject = new ProjectResponse(id, request.name(), request.description());
-                projects.set(index, updatedProject);
-                return updatedProject;
-            }
-        }
-        throw new ProjectNotFoundException(id);
+        Project project = findProject(id) ;
+        project.update(request.name(), request.description()) ;
+        return toResponse(project);
     }
 
+    @Transactional
     public void deleteProject(Long id) {
-        boolean deleted = projects.removeIf(
-                project -> project.id().equals(id)
-        );
-        if (!deleted){
-            throw new ProjectNotFoundException(id) ;
-        }
+        Project project = findProject(id) ;
+        projectRepository.delete(project);
     }
+
+    private Project findProject(Long id) {
+        return projectRepository.findById(id).orElseThrow(() -> new ProjectNotFoundException(id)) ;
+    }
+
+    private ProjectResponse toResponse(Project project){
+        return new ProjectResponse(project.getId(), project.getName(), project.getDescription());
+    }
+
 }
