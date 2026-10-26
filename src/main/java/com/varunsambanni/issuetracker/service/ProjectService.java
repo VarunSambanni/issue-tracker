@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+// @Transactional(readOnly = true) makes reading the default for this service. Write methods override it with @Transactional.
+
 @Service
 @Transactional(readOnly = true)
 public class ProjectService {
